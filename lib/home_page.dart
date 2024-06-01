@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/contact.dart';
+import 'package:myapp/models/contact.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,6 +12,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController contactController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   List<Contact> contacts = List.empty(growable: true);
 
   int selectedIndex = -1;
@@ -49,6 +50,17 @@ class _HomePageState extends State<HomePage> {
                     Radius.circular(10),
                   ))),
             ),
+            //const SizedBox(height: 10),
+            TextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                  hintText: 'Email',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ))),
+            ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -58,11 +70,13 @@ class _HomePageState extends State<HomePage> {
                       //
                       String name = nameController.text.trim();
                       String contact = contactController.text.trim();
+                      String email = emailController.text.trim();
                       if (name.isNotEmpty && contact.isNotEmpty) {
                         setState(() {
                           nameController.text = '';
                           contactController.text = '';
-                          contacts.add(Contact(name: name, contact: contact));
+                          emailController.text = '';
+                          contacts.add(Contact(name: name, phone: contact , id: 2, email: email));
                         });
                       }
                       //
@@ -73,12 +87,15 @@ class _HomePageState extends State<HomePage> {
                       //
                       String name = nameController.text.trim();
                       String contact = contactController.text.trim();
+                      String email = emailController.text.trim();
                       if (name.isNotEmpty && contact.isNotEmpty) {
                         setState(() {
                           nameController.text = '';
                           contactController.text = '';
+                          emailController.text = '';
                           contacts[selectedIndex].name = name;
-                          contacts[selectedIndex].contact = contact;
+                          contacts[selectedIndex].phone = contact;
+                          contacts[selectedIndex].email = email;
                           selectedIndex = -1;
                         });
                       }
@@ -124,7 +141,8 @@ class _HomePageState extends State<HomePage> {
               contacts[index].name,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(contacts[index].contact),
+            Text(contacts[index].phone),
+            Text(contacts[index].email),
           ],
         ),
         trailing: SizedBox(
@@ -135,7 +153,8 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     //
                     nameController.text = contacts[index].name;
-                    contactController.text = contacts[index].contact;
+                    contactController.text = contacts[index].phone;
+                    emailController.text = contacts[index].email;
                     setState(() {
                       selectedIndex = index;
                     });
