@@ -6,6 +6,7 @@ class ContactRepository {
 
   Future<List<Contact>> getContacts() async {
     final response = await _contactService.fetchContacts();
-    return response.map((data) => Contact.fromJson(data)).toList();
+    var contacts = response['data'] as  List<dynamic>;
+    return contacts.map((data) => Contact.fromJson(data)).toList();
   }
 }

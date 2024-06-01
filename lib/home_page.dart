@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/models/contact.dart';
+import 'package:myapp/providers/contact_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,18 +15,29 @@ class _HomePageState extends State<HomePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController contactController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  List<Contact> contacts = List.empty(growable: true);
 
   int selectedIndex = -1;
-
+/*
+ @override
+  void initState() {
+    super.initState();
+    // Fetch contacts when the widget is first created
+    Future.microtask(() => Provider.of<ContactProvider>(context, listen: false).fetchContacts());
+  }*/
   @override
   Widget build(BuildContext context) {
+    final contactProvider = Provider.of<ContactProvider>(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Contacts List'),
       ),
-      body: Padding(
+      body: contactProvider.isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : 
+      Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
@@ -41,8 +54,8 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 10),
             TextField(
               controller: contactController,
-              keyboardType: TextInputType.number,
-              maxLength: 10,
+              keyboardType: TextInputType.text,
+              maxLength: 14,
               decoration: const InputDecoration(
                   hintText: 'Contact Number',
                   border: OutlineInputBorder(
@@ -76,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                           nameController.text = '';
                           contactController.text = '';
                           emailController.text = '';
-                          contacts.add(Contact(name: name, phone: contact , id: 2, email: email));
+                          contactProvider.contacts.add(Contact(name: name, phone: contact , id: 2, email: email));
                         });
                       }
                       //
@@ -93,9 +106,9 @@ class _HomePageState extends State<HomePage> {
                           nameController.text = '';
                           contactController.text = '';
                           emailController.text = '';
-                          contacts[selectedIndex].name = name;
-                          contacts[selectedIndex].phone = contact;
-                          contacts[selectedIndex].email = email;
+                          contactProvider.contacts[selectedIndex].name = name;
+                          contactProvider.contacts[selectedIndex].phone = contact;
+                          contactProvider.contacts[selectedIndex].email = email;
                           selectedIndex = -1;
                         });
                       }
@@ -105,24 +118,28 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             const SizedBox(height: 10),
-            contacts.isEmpty
+            contactProvider.contacts.isEmpty
                 ? const Text(
                     'No Contact yet..',
                     style: TextStyle(fontSize: 22),
                   )
                 : Expanded(
                     child: ListView.builder(
-                      itemCount: contacts.length,
-                      itemBuilder: (context, index) => getRow(index),
+                      itemCount: contactProvider.contacts.length,
+                      itemBuilder: (context, index) => getRow(index, contactProvider),
                     ),
                   )
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => contactProvider.fetchContacts(), 
+        child: const Icon(Icons.refresh),
+      ),
     );
   }
 
-  Widget getRow(int index) {
+  Widget getRow(int index, var contactProvider) {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
@@ -130,7 +147,7 @@ class _HomePageState extends State<HomePage> {
               index % 2 == 0 ? Colors.deepPurpleAccent : Colors.purple,
           foregroundColor: Colors.white,
           child: Text(
-            contacts[index].name[0],
+            contactProvider.contacts[index].name[0],
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -138,11 +155,11 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              contacts[index].name,
+              contactProvider.contacts[index].name,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(contacts[index].phone),
-            Text(contacts[index].email),
+            Text(contactProvider.contacts[index].phone),
+            Text(contactProvider.contacts[index].email),
           ],
         ),
         trailing: SizedBox(
@@ -152,9 +169,9 @@ class _HomePageState extends State<HomePage> {
               InkWell(
                   onTap: () {
                     //
-                    nameController.text = contacts[index].name;
-                    contactController.text = contacts[index].phone;
-                    emailController.text = contacts[index].email;
+                    nameController.text =  contactProvider.contacts[index].name;
+                    contactController.text =  contactProvider.contacts[index].phone;
+                    emailController.text =  contactProvider.contacts[index].email;
                     setState(() {
                       selectedIndex = index;
                     });
@@ -163,7 +180,7 @@ class _HomePageState extends State<HomePage> {
               InkWell(
                   onTap: (() {
                     setState(() {
-                      contacts.removeAt(index);
+                      contactProvider.contacts.removeAt(index);
                     });
                   }),
                   child: const Icon(Icons.delete)),
