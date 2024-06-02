@@ -9,4 +9,14 @@ class ContactRepository {
     var contacts = response['data'] as  List<dynamic>;
     return contacts.map((data) => Contact.fromJson(data)).toList();
   }
+
+  Future<Contact> editContact(int id, String  name, String email, String phoneNumber) async {
+    final response = await _contactService.editContact(id, name, email, phoneNumber);
+    return Contact.fromJson(response);
+  }
+
+  Future<Contact> addContact(String  name, String email, String phoneNumber) async {
+    final response = await _contactService.addContact(name, email, phoneNumber);
+    return Contact.fromJson(response);
+  }
 }

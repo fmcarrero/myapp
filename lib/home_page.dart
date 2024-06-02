@@ -1,5 +1,5 @@
+
 import 'package:flutter/material.dart';
-import 'package:myapp/models/contact.dart';
 import 'package:myapp/providers/contact_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -17,13 +17,14 @@ class _HomePageState extends State<HomePage> {
   TextEditingController emailController = TextEditingController();
 
   int selectedIndex = -1;
-/*
+
  @override
   void initState() {
     super.initState();
     // Fetch contacts when the widget is first created
     Future.microtask(() => Provider.of<ContactProvider>(context, listen: false).fetchContacts());
-  }*/
+  }
+
   @override
   Widget build(BuildContext context) {
     final contactProvider = Provider.of<ContactProvider>(context);
@@ -82,39 +83,37 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () {
                       //
                       String name = nameController.text.trim();
-                      String contact = contactController.text.trim();
+                      String phoneNumber = contactController.text.trim();
                       String email = emailController.text.trim();
-                      if (name.isNotEmpty && contact.isNotEmpty) {
+                      if (name.isNotEmpty && phoneNumber.isNotEmpty  && email.isNotEmpty) {
                         setState(() {
                           nameController.text = '';
                           contactController.text = '';
                           emailController.text = '';
-                          contactProvider.contacts.add(Contact(name: name, phone: contact , id: 2, email: email));
+                          contactProvider.addContact(name, email, phoneNumber);
                         });
                       }
                       //
                     },
                     child: const Text('Save')),
                 ElevatedButton(
-                    onPressed: () {
+                    onPressed:  () {
                       //
                       String name = nameController.text.trim();
-                      String contact = contactController.text.trim();
+                      String phoneNumber = contactController.text.trim();
                       String email = emailController.text.trim();
-                      if (name.isNotEmpty && contact.isNotEmpty) {
+                      if (name.isNotEmpty && phoneNumber.isNotEmpty && email.isNotEmpty) {
                         setState(() {
                           nameController.text = '';
                           contactController.text = '';
                           emailController.text = '';
-                          contactProvider.contacts[selectedIndex].name = name;
-                          contactProvider.contacts[selectedIndex].phone = contact;
-                          contactProvider.contacts[selectedIndex].email = email;
+                          contactProvider.editContact(contactProvider.contacts[selectedIndex].id, name, email, phoneNumber);
                           selectedIndex = -1;
                         });
                       }
                       //
                     },
-                    child: const Text('Update')),
+                    child: const Text('Edit')),
               ],
             ),
             const SizedBox(height: 10),
