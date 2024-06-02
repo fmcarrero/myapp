@@ -19,7 +19,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Fetch contacts when the widget is first created
     Future.microtask(() => Provider.of<ContactProvider>(context, listen: false).fetchContacts());
   }
 
@@ -86,6 +85,7 @@ class _HomePageState extends State<HomePage> {
                               nameController.clear();
                               contactController.clear();
                               emailController.clear();
+                              FocusScope.of(context).unfocus();
                             });
                           }
                         },
@@ -101,6 +101,7 @@ class _HomePageState extends State<HomePage> {
                               nameController.clear();
                               contactController.clear();
                               emailController.clear();
+                              FocusScope.of(context).unfocus();
                               setState(() {
                                 selectedIndex = -1;
                               });
