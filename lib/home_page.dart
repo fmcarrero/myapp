@@ -1,11 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:myapp/providers/contact_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,7 +16,7 @@ class _HomePageState extends State<HomePage> {
 
   int selectedIndex = -1;
 
- @override
+  @override
   void initState() {
     super.initState();
     // Fetch contacts when the widget is first created
@@ -37,102 +35,99 @@ class _HomePageState extends State<HomePage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : 
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                  hintText: 'Contact Name',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ))),
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                        hintText: 'Contact Name',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ))),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: contactController,
+                    keyboardType: TextInputType.text,
+                    maxLength: 14,
+                    decoration: const InputDecoration(
+                        hintText: 'Contact Number',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ))),
+                  ),
+                  //const SizedBox(height: 10),
+                  TextField(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                        hintText: 'Email',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ))),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          String name = nameController.text.trim();
+                          String phoneNumber = contactController.text.trim();
+                          String email = emailController.text.trim();
+                          if (name.isNotEmpty && phoneNumber.isNotEmpty && email.isNotEmpty) {
+                            contactProvider.addContact(name, email, phoneNumber).then((_) {
+                              nameController.clear();
+                              contactController.clear();
+                              emailController.clear();
+                            });
+                          }
+                        },
+                        child: const Text('Save'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          String name = nameController.text.trim();
+                          String phoneNumber = contactController.text.trim();
+                          String email = emailController.text.trim();
+                          if (name.isNotEmpty && phoneNumber.isNotEmpty && email.isNotEmpty && selectedIndex != -1) {
+                            contactProvider.editContact(contactProvider.contacts[selectedIndex].id, name, email, phoneNumber).then((_) {
+                              nameController.clear();
+                              contactController.clear();
+                              emailController.clear();
+                              setState(() {
+                                selectedIndex = -1;
+                              });
+                            });
+                          }
+                        },
+                        child: const Text('Edit'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  contactProvider.contacts.isEmpty
+                      ? const Text(
+                          'No Contact yet..',
+                          style: TextStyle(fontSize: 22),
+                        )
+                      : Expanded(
+                          child: ListView.builder(
+                            itemCount: contactProvider.contacts.length,
+                            itemBuilder: (context, index) => getRow(index, contactProvider),
+                          ),
+                        ),
+                ],
+              ),
             ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: contactController,
-              keyboardType: TextInputType.text,
-              maxLength: 14,
-              decoration: const InputDecoration(
-                  hintText: 'Contact Number',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ))),
-            ),
-            //const SizedBox(height: 10),
-            TextField(
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                  hintText: 'Email',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ))),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      //
-                      String name = nameController.text.trim();
-                      String phoneNumber = contactController.text.trim();
-                      String email = emailController.text.trim();
-                      if (name.isNotEmpty && phoneNumber.isNotEmpty  && email.isNotEmpty) {
-                        setState(() {
-                          nameController.text = '';
-                          contactController.text = '';
-                          emailController.text = '';
-                          contactProvider.addContact(name, email, phoneNumber);
-                        });
-                      }
-                      //
-                    },
-                    child: const Text('Save')),
-                ElevatedButton(
-                    onPressed:  () {
-                      //
-                      String name = nameController.text.trim();
-                      String phoneNumber = contactController.text.trim();
-                      String email = emailController.text.trim();
-                      if (name.isNotEmpty && phoneNumber.isNotEmpty && email.isNotEmpty) {
-                        setState(() {
-                          nameController.text = '';
-                          contactController.text = '';
-                          emailController.text = '';
-                          contactProvider.editContact(contactProvider.contacts[selectedIndex].id, name, email, phoneNumber);
-                          selectedIndex = -1;
-                        });
-                      }
-                      //
-                    },
-                    child: const Text('Edit')),
-              ],
-            ),
-            const SizedBox(height: 10),
-            contactProvider.contacts.isEmpty
-                ? const Text(
-                    'No Contact yet..',
-                    style: TextStyle(fontSize: 22),
-                  )
-                : Expanded(
-                    child: ListView.builder(
-                      itemCount: contactProvider.contacts.length,
-                      itemBuilder: (context, index) => getRow(index, contactProvider),
-                    ),
-                  )
-          ],
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => contactProvider.fetchContacts(), 
+        onPressed: () => contactProvider.fetchContacts(),
         child: const Icon(Icons.refresh),
       ),
     );
@@ -142,8 +137,7 @@ class _HomePageState extends State<HomePage> {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor:
-              index % 2 == 0 ? Colors.deepPurpleAccent : Colors.purple,
+          backgroundColor: index % 2 == 0 ? Colors.deepPurpleAccent : Colors.purple,
           foregroundColor: Colors.white,
           child: Text(
             contactProvider.contacts[index].name[0],
@@ -166,23 +160,24 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             children: [
               InkWell(
-                  onTap: () {
-                    //
-                    nameController.text =  contactProvider.contacts[index].name;
-                    contactController.text =  contactProvider.contacts[index].phone;
-                    emailController.text =  contactProvider.contacts[index].email;
-                    setState(() {
-                      selectedIndex = index;
-                    });
-                  },
-                  child: const Icon(Icons.edit)),
+                onTap: () {
+                  nameController.text = contactProvider.contacts[index].name;
+                  contactController.text = contactProvider.contacts[index].phone;
+                  emailController.text = contactProvider.contacts[index].email;
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                },
+                child: const Icon(Icons.edit),
+              ),
               InkWell(
-                  onTap: (() {
-                    setState(() {
-                      contactProvider.contacts.removeAt(index);
-                    });
-                  }),
-                  child: const Icon(Icons.delete)),
+                onTap: () {
+                  contactProvider.deleteContact(contactProvider.contacts[index].id).then((_) {
+                    setState(() {});
+                  });
+                },
+                child: const Icon(Icons.delete),
+              ),
             ],
           ),
         ),
