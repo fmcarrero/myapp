@@ -134,7 +134,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget getRow(int index, var contactProvider) {
+  Widget getRow(int index, ContactProvider contactProvider) {
     return Card(
       child: ListTile(
         leading: CircleAvatar(

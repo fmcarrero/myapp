@@ -32,4 +32,9 @@ class ContactProvider with ChangeNotifier {
     _contacts.add(newContact);
     notifyListeners();
   }
+  Future<void> deleteContact(int id) async {
+    await ContactRepository().deleteContact(id);
+    _contacts.removeWhere((c) => c.id == id);
+    notifyListeners();
+  }
 }

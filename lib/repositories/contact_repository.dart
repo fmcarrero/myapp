@@ -19,4 +19,7 @@ class ContactRepository {
     final response = await _contactService.addContact(name, email, phoneNumber);
     return Contact.fromJson(response);
   }
+  Future<void> deleteContact(int id) async {
+    await _contactService.deleteContact(id);
+  }
 }
