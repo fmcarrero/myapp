@@ -76,18 +76,30 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: ()async {
                           String name = nameController.text.trim();
                           String phoneNumber = contactController.text.trim();
                           String email = emailController.text.trim();
                           if (name.isNotEmpty && phoneNumber.isNotEmpty && email.isNotEmpty) {
-                            contactProvider.addContact(name, email, phoneNumber).then((_) {
-                              nameController.clear();
-                              contactController.clear();
-                              emailController.clear();
-                              FocusScope.of(context).unfocus();
-                            });
-                          }
+                              try{
+                                await contactProvider.addContact(name, email, phoneNumber).then((_) {
+                                nameController.clear();
+                                contactController.clear();
+                                emailController.clear();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Contact Added'),
+                                  ),
+                                );
+                                
+                              });
+                              }catch(exception){
+                                 ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('$exception')));
+                              }
+                              finally{
+                                FocusScope.of(context).unfocus();
+                              } 
+                            }
                         },
                         child: const Text('Save'),
                       ),
