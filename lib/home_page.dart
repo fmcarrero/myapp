@@ -103,6 +103,12 @@ class _HomePageState extends State<HomePage> {
                             } finally {
                               FocusScope.of(context).unfocus();
                             }
+                          }else {
+                            FocusScope.of(context).unfocus();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please fill all fields'),
+                                ));
                           }
                         },
                         child: const Text('Save'),
@@ -141,7 +147,12 @@ class _HomePageState extends State<HomePage> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text('$exception')));
                             }
-
+                          }else {
+                            FocusScope.of(context).unfocus();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please fill all fields'),
+                                ));
                           }
                         },
                         child: const Text('Edit'),
