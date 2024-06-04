@@ -19,7 +19,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => Provider.of<ContactProvider>(context, listen: false).fetchContacts());
+    Future.microtask(() =>
+        Provider.of<ContactProvider>(context, listen: false).fetchContacts());
   }
 
   @override
@@ -76,40 +77,53 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
-                        onPressed: ()async {
+                        onPressed: () async {
                           String name = nameController.text.trim();
                           String phoneNumber = contactController.text.trim();
                           String email = emailController.text.trim();
-                          if (name.isNotEmpty && phoneNumber.isNotEmpty && email.isNotEmpty) {
-                              try{
-                                await contactProvider.addContact(name, email, phoneNumber).then((_) {
+                          if (name.isNotEmpty &&
+                              phoneNumber.isNotEmpty &&
+                              email.isNotEmpty) {
+                            try {
+                              await contactProvider
+                                  .addContact(name, email, phoneNumber)
+                                  .then((_) {
                                 nameController.clear();
                                 contactController.clear();
                                 emailController.clear();
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Contact Added'),
+                                  const SnackBar(
+                                    content: Text('Contact Added'),
                                   ),
                                 );
-                                
                               });
-                              }catch(exception){
-                                 ScaffoldMessenger.of(context).showSnackBar(
+                            } catch (exception) {
+                              ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('$exception')));
-                              }
-                              finally{
-                                FocusScope.of(context).unfocus();
-                              } 
+                            } finally {
+                              FocusScope.of(context).unfocus();
                             }
+                          }
                         },
                         child: const Text('Save'),
                       ),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           String name = nameController.text.trim();
                           String phoneNumber = contactController.text.trim();
                           String email = emailController.text.trim();
-                          if (name.isNotEmpty && phoneNumber.isNotEmpty && email.isNotEmpty && selectedIndex != -1) {
-                            contactProvider.editContact(contactProvider.contacts[selectedIndex].id, name, email, phoneNumber).then((_) {
+                          if (name.isNotEmpty &&
+                              phoneNumber.isNotEmpty &&
+                              email.isNotEmpty &&
+                              selectedIndex != -1) {
+                                try {
+                            await contactProvider
+                                .editContact(
+                                    contactProvider.contacts[selectedIndex].id,
+                                    name,
+                                    email,
+                                    phoneNumber)
+                                .then((_) {
                               nameController.clear();
                               contactController.clear();
                               emailController.clear();
@@ -117,7 +131,17 @@ class _HomePageState extends State<HomePage> {
                               setState(() {
                                 selectedIndex = -1;
                               });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Contact edited'),
+                                ),
+                              );
                             });
+                            }catch(exception){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('$exception')));
+                            }
+
                           }
                         },
                         child: const Text('Edit'),
@@ -133,7 +157,8 @@ class _HomePageState extends State<HomePage> {
                       : Expanded(
                           child: ListView.builder(
                             itemCount: contactProvider.contacts.length,
-                            itemBuilder: (context, index) => getRow(index, contactProvider),
+                            itemBuilder: (context, index) =>
+                                getRow(index, contactProvider),
                           ),
                         ),
                 ],
@@ -150,7 +175,8 @@ class _HomePageState extends State<HomePage> {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: index % 2 == 0 ? Colors.deepPurpleAccent : Colors.purple,
+          backgroundColor:
+              index % 2 == 0 ? Colors.deepPurpleAccent : Colors.purple,
           foregroundColor: Colors.white,
           child: Text(
             contactProvider.contacts[index].name[0],
@@ -175,7 +201,8 @@ class _HomePageState extends State<HomePage> {
               InkWell(
                 onTap: () {
                   nameController.text = contactProvider.contacts[index].name;
-                  contactController.text = contactProvider.contacts[index].phone;
+                  contactController.text =
+                      contactProvider.contacts[index].phone;
                   emailController.text = contactProvider.contacts[index].email;
                   setState(() {
                     selectedIndex = index;
@@ -185,7 +212,9 @@ class _HomePageState extends State<HomePage> {
               ),
               InkWell(
                 onTap: () {
-                  contactProvider.deleteContact(contactProvider.contacts[index].id).then((_) {
+                  contactProvider
+                      .deleteContact(contactProvider.contacts[index].id)
+                      .then((_) {
                     setState(() {});
                   });
                 },

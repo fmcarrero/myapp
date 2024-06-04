@@ -32,7 +32,6 @@ class ContactService {
     if (response.statusCode == 201) {
       return json.decode(response.body);
     } else {
-        // Parse error message from response
       String errorMessage;
       try {
         final responseBody = json.decode(response.body);
@@ -66,7 +65,14 @@ class ContactService {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      throw Exception('$name Failed to update contact');
+     String errorMessage;
+      try {
+        final responseBody = json.decode(response.body);
+        errorMessage = responseBody['message'] ?? 'Failed to add contact';
+      } catch (e) {
+        errorMessage = 'Failed to add contact';
+      }
+      throw Exception(errorMessage);
     }
   }
 
