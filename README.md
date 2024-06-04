@@ -1,16 +1,44 @@
-# myapp
+# MyApp
 
-A new Flutter project.
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## Getting Started
+## Description
 
-This project is a starting point for a Flutter application.
+MyApp is a simple application that management contacts.
 
-A few resources to get you started if this is your first Flutter project:
+## Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Create contact
+- List contacts
+- Update contact
+- Delete contact
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/fmcarrero/myapp.git
+
+```
+
+2. Install Flutter dependencies:
+
+```bash
+flutter pub get
+```
+3. Ensure an Android device or emulator is running. If using an emulator, you can start one via Android Studio or the command line with flutter emulators --launch <emulator_id>
+
+
+## License
+
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request.
+
+## Contact
+
+- [GitHub](https://github.com/fmcarrero)
